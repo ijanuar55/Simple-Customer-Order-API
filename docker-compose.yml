@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: "dbo"
+    platform: linux/x86_64
+    build: 
+      context: .
+      dockerfile: db.Dockerfile
+    networks:
+      - default
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      DB_HOST_MYSQL: "localhost"
+      DB_USER_MYSQL: "root"
+      DB_PASSWORD_MYSQL: ""
+      DB_NAME_MYSQL: "dbo"
+      DB_PORT_MYSQL: "3306"
+      TOKEN_TTL: "2000"
+      JWT_PRIVATE_KEY: "passwordnyapanjangbanget"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+  api:
+    container_name:  "dbo"
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - .:/app/
+networks:
+  default:
+volumes:
+  mysql_data:
